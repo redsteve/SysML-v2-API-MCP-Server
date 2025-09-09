@@ -1,5 +1,7 @@
 #pragma once
 
+/// @file Provides prepared test data.
+
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -70,5 +72,36 @@ const json expectedEchoToolResponse = {
       {"text", "Echo: The big brown fox jumps over the lazy dog."}
     }}},
     { "isError", json(false)}
+  }}
+};
+
+const json listAvailableToolsRequest = {
+  {"jsonrpc", "2.0"},
+  {"id", json()},
+  {"method", "tools/list"},
+  {"params", {
+    {"protocolVersion", "2024-11-05"},
+    {"clientInfo", {
+      {"name", "MCPHostApplication"},
+      {"version", "0.0.0"}
+      }}
+    }}
+};
+
+const json expectedToolListResponse = {
+  {"jsonrpc", "2.0"},
+  {"id", json()},
+  {"result", {
+    {"tools", {{
+      {"name", "echo"},
+      {"description", "A simple tool that returns the passed message as its response."},
+      {"inputSchema",
+        {"properties",
+          {"message",
+            {{"type", "string"}, {"description", "The message that shall be echoed."}}
+          }},
+          {"type", "object"},
+    {"required", {"message"}}}
+    }}}
   }}
 };

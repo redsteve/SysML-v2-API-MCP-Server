@@ -23,4 +23,11 @@ TEST_CASE("Verifying SysML v2 API MCP-Server") {
     const json response = server.handleRequest(callEchoToolRequest);
     REQUIRE(response == expectedEchoToolResponse);
   }
+
+  SECTION("Mandatory MCP method 'tools/list' works as expected") {
+    MCPServer server { SERVER_NAME, SERVER_VERSION };
+    server.handleRequest(initServerRequest);
+    const json response = server.handleRequest(listAvailableToolsRequest);
+    REQUIRE(response == expectedToolListResponse);
+  }
 }

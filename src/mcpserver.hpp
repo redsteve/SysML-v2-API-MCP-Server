@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mcptransport.hpp"
 #include "programoptions.hpp"
 
 #include <nlohmann/json.hpp>
@@ -26,12 +27,22 @@ public:
   MCPServer(const std::string_view name, const std::string_view version,
     const ProgramOptions& programOptions) noexcept;
   
+  /// @brief Defines the kind of transport for MCP requests and responses.
+  /// @param mcpTransport is an instance of a class that implements MCPTransport. 
+  void setTransport(std::unique_ptr<MCPTransport> mcpTransport);
+
   /// @brief Starts the server.
   void run();
   
-  /// @brief
+  /// @brief Stops the server.
+  void stop() noexcept;
+
+  /// @brief Checks whether the server thread is running.
+  bool isRunning() const noexcept;
+
+  /// @brief 
   /// @param request is the request as a JSON-RPC object.
-  /// @return the response of the request as a JSON object.
+  /// @return the response to the request as a JSON object.
   json handleRequest(const json &request) noexcept;
 
   void registerTool(const std::string& toolName,
@@ -82,6 +93,8 @@ private:
     };
 
     std::map<std::string, ResourceDefinition> resources_;
+
+    std::unique_ptr<MCPTransport> mcpTransport_;
 
     std::string name_;
     std::string version_;

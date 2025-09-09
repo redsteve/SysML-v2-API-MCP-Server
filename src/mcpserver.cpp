@@ -5,27 +5,41 @@
 
 using namespace std;
 
-MCPServer::MCPServer(const std::string_view name, const std::string_view version) noexcept :
+MCPServer::MCPServer(const string_view name, const string_view version) noexcept :
   MCPServer { name, version, ProgramOptions() } {
 }
 
-MCPServer::MCPServer(const std::string_view name, const std::string_view version,
+MCPServer::MCPServer(const string_view name, const string_view version,
   const ProgramOptions& programOptions) noexcept :
-  name_(name), version_(version), programOptions_(std::move(programOptions)) {
+  name_(name), version_(version), programOptions_(move(programOptions)) {
   setupCapabilities();
 }
 
-void MCPServer::run() {
-  string line;
-  while (getline(cin, line)) {
-    try {
-      const json request = json::parse(line);
-      const json response = handleRequest(request);
-      cout << response.dump() << endl;
-    } catch (const exception& ex) {
-      cerr << "A critical exception has occurred: " << ex.what() << endl;
-    }
+void MCPServer::setTransport(unique_ptr<MCPTransport> mcpTransport) {
+  if (mcpTransport_) {
+    mcpTransport_->stop();
   }
+  mcpTransport_ = move(mcpTransport);
+}
+
+void MCPServer::run() {
+  if (! mcpTransport_) {
+    throw std::runtime_error("No transport for MCP request/respones configured!");
+  }
+  
+  mcpTransport_->start([this](const json& request) {
+    return this->handleRequest(request);
+  });
+}
+
+void MCPServer::stop() noexcept {
+  if (mcpTransport_) {
+    mcpTransport_->stop();
+  }
+}
+
+bool MCPServer::isRunning() const noexcept {
+  return mcpTransport_ && mcpTransport_->isRunning();
 }
 
 json MCPServer::handleRequest(const json& request) noexcept {

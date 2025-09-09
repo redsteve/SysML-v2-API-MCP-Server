@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.0)
 
-project(SysML-v2-API-MCP-Server VERSION 1.0 LANGUAGES CXX)
+project(SysML-v2-API-MCP-Server VERSION 0.9 LANGUAGES CXX)
 
 set(TEST_NAME SysMLv2MCPServerTest)
 set(APP_NAME SysMLv2MCPServer)
@@ -27,6 +27,11 @@ FetchContent_Declare(argparse GIT_REPOSITORY https://github.com/p-ranav/argparse
 FetchContent_MakeAvailable(argparse)
 include_directories(${CMAKE_SOURCE_DIR}/build/_deps/argparse-src/include)
 
+# Get latest httplib C++ header-only cross platform HTTP/HTTPS library
+FetchContent_Declare(httplib GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git)
+FetchContent_MakeAvailable(httplib)
+include_directories(${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)
+
 # Get spdlog C++ logging framework
 # FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git GIT_TAG v1.15.3)
 # include_directories(${CMAKE_SOURCE_DIR}/build/_deps/spdlog-src/include)
@@ -48,11 +53,15 @@ add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 add_executable(${APP_NAME}
     src/main.cpp
     src/commandlineargumentparser.cpp
+    src/httpmcptransport.cpp
+    src/stdinstdoutmcptransport.cpp
     src/mcpserver.cpp
 )
 target_link_libraries(${APP_NAME} PRIVATE argparse)
 
 # === Compiler options ===
+
+add_definitions(-D_WIN32_WINNT=0x0A00) # Windows 10 or higher required
 
 if(MSVC)
   target_compile_options(${TEST_NAME} PRIVATE /W4 /WX)

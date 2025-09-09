@@ -1,5 +1,3 @@
-#define CATCH_CONFIG_MAIN  // This tells Catch2 to provide a main() function.
-
 #include "../src/mcpserver.hpp"
 #include "testdata.hpp"
 

@@ -33,8 +33,8 @@ const json initServerRequest = {
 };
 
 const json expectedInitServerResponse = {
-  {"id" , json()},
   {"jsonrpc", "2.0"},
+  {"id" , json()},
   {"result", {
     {"capabilities", {
       { "logging" , json::object() },
@@ -59,4 +59,16 @@ const json callEchoToolRequest = {
       {"message", "The big brown fox jumps over the lazy dog."}
       }}
     }}
+};
+
+const json expectedEchoToolResponse = {
+  {"jsonrpc", "2.0"},
+  {"id", json()},
+  {"result", {
+    {"content", {{
+      {"type", "text"},
+      {"text", "Echo: The big brown fox jumps over the lazy dog."}
+    }}},
+    { "isError", json(false)}
+  }}
 };

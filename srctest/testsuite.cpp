@@ -23,6 +23,6 @@ TEST_CASE("Verifying SysML v2 API MCP-Server") {
     MCPServer server { SERVER_NAME, SERVER_VERSION };
     server.handleRequest(initServerRequest);
     const json response = server.handleRequest(callEchoToolRequest);
-    REQUIRE(response == expectedInitServerResponse);
+    REQUIRE(response == expectedEchoToolResponse);
   }
 }

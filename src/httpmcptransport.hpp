@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mcptransport.hpp"
-// #include <httplib.h>
+#include <httplib.h>
 
 #include <memory>
 #include <string>
@@ -16,7 +16,7 @@ public:
   ~HttpMcpTransport() override;
 
 private:
-  // std::unique_ptr<httplib::Server> server_;
+  std::unique_ptr<httplib::Server> server_;
   std::thread serverThread_;
   std::string hostAddress_;
   int port_;

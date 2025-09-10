@@ -28,22 +28,25 @@ FetchContent_MakeAvailable(argparse)
 include_directories(${CMAKE_SOURCE_DIR}/build/_deps/argparse-src/include)
 
 # Get latest httplib C++ header-only cross platform HTTP/HTTPS library
-FetchContent_Declare(httplib GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git)
+FetchContent_Declare(httplib GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git GIT_TAG v0.15.3)
 FetchContent_MakeAvailable(httplib)
-include_directories(${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)
 
-# Get spdlog C++ logging framework
-# FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git GIT_TAG v1.15.3)
-# include_directories(${CMAKE_SOURCE_DIR}/build/_deps/spdlog-src/include)
+find_package(Threads REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 # === Target: Unit Test ===
 
 add_executable(${TEST_NAME}
     srctest/testsuite.cpp
     src/commandlineargumentparser.cpp
+    src/httpmcptransport.cpp
+    src/httptoolclient.cpp
     src/mcpserver.cpp
+    src/stdinstdoutmcptransport.cpp
 )
-target_link_libraries(${TEST_NAME} PRIVATE argparse Catch2::Catch2WithMain)
+#target_compile_definitions(${TEST_NAME} PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
+target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)
+target_link_libraries(${TEST_NAME} PRIVATE argparse ws2_32 Threads::Threads OpenSSL::SSL OpenSSL::Crypto Catch2::Catch2WithMain)
 
 enable_testing()
 add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
@@ -54,10 +57,13 @@ add_executable(${APP_NAME}
     src/main.cpp
     src/commandlineargumentparser.cpp
     src/httpmcptransport.cpp
-    src/stdinstdoutmcptransport.cpp
+    src/httptoolclient.cpp
     src/mcpserver.cpp
+    src/stdinstdoutmcptransport.cpp
 )
-target_link_libraries(${APP_NAME} PRIVATE argparse)
+#target_compile_definitions(${APP_NAME} PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
+target_include_directories(${APP_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)
+target_link_libraries(${APP_NAME} PRIVATE argparse ws2_32 Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
 
 # === Compiler options ===
 

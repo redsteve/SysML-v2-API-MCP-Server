@@ -1,7 +1,7 @@
 #include "mcpserver.hpp"
+#include "httptoolclient.hpp"
 
 #include <iostream>
-#include <sstream>
 
 using namespace std;
 
@@ -13,6 +13,7 @@ MCPServer::MCPServer(const string_view name, const string_view version,
   const ProgramOptions& programOptions) noexcept :
   name_(name), version_(version), programOptions_(move(programOptions)) {
   setupCapabilities();
+  httpClient_ = std::make_unique<HttpToolClient>();
 }
 
 void MCPServer::setTransport(unique_ptr<MCPTransport> mcpTransport) {
@@ -24,7 +25,7 @@ void MCPServer::setTransport(unique_ptr<MCPTransport> mcpTransport) {
 
 void MCPServer::run() {
   if (! mcpTransport_) {
-    throw std::runtime_error("No transport for MCP request/respones configured!");
+    throw runtime_error("No transport for MCP request/respones configured!");
   }
   
   mcpTransport_->start([this](const json& request) {
@@ -73,7 +74,7 @@ json MCPServer::handleRequest(const json& request) noexcept {
       {"result", result}
     };
 
-  } catch (const std::exception& ex) {
+  } catch (const exception& ex) {
     json id = request.value("id", nullptr);
     return {
       {JSONPARAM_JSONRPC_VERSION, "2.0"},
@@ -89,7 +90,7 @@ json MCPServer::handleRequest(const json& request) noexcept {
 void MCPServer::registerTool(const string& toolName,
                              const string& description,
                              const json& inputSchema,
-                             std::function<json(const json&)> handler) {
+                             function<json(const json&)> handler) {
   tools_[toolName] = {toolName, description, inputSchema, handler};
 }
 
@@ -97,7 +98,7 @@ void MCPServer::registerResource(const string& resourceName,
                                  const string& uri,
                                  const string& description,
                                  const string& mimeType,
-                                 std::function<json()> handler) {
+                                 function<json()> handler) {
   resources_[uri] = {uri, resourceName, description, mimeType, handler};
 }
 
@@ -133,10 +134,15 @@ void MCPServer::registerEchoTool() {
   });
 }
 
+void MCPServer::registerSpecificTools() {
+
+}
+
 json MCPServer::performInitialization(const json& parameters) {
   if (! initialized_) {
     checkMcpProtocolVersion(parameters);
     registerEchoTool();
+    registerSpecificTools();
     initialized_ = true;
   }
   
@@ -179,12 +185,12 @@ json MCPServer::callTool(const json& parameters) {
   
   try {
     return invokeToolHandler(toolName, arguments);
-  } catch (const std::exception& ex) {
+  } catch (const exception& ex) {
     return {
       {"content", {{
           {"type", "text"},
           {"text", "Error executing tool '" + toolName + "'. Reason: " +
-            std::string(ex.what())}
+            string(ex.what())}
         }}},
         {"isError", true}
     };
@@ -223,7 +229,7 @@ json MCPServer::readResource(const json& parameters) {
   checkIfServerIsInitialized();
   checkIfParameterExists("uri", parameters);
   
-  const std::string uri = parameters["uri"];
+  const string uri = parameters["uri"];
         
   checkIfResourceExists(uri);
   
@@ -236,7 +242,7 @@ json MCPServer::readResource(const json& parameters) {
         {"text", content}
       }}}
     };
-    } catch (const std::exception& ex) {
+    } catch (const exception& ex) {
       throw runtime_error("Error reading resource: " + std::string(ex.what()));
     }
 }

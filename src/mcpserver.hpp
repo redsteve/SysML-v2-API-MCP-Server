@@ -1,5 +1,8 @@
 #pragma once
 
+#include "httptoolclient.hpp"
+#include "mcpresourceregistry.hpp"
+#include "mcptoolregistry.hpp"
 #include "mcptransport.hpp"
 #include "programoptions.hpp"
 
@@ -10,9 +13,10 @@
 
 using json = nlohmann::json;
 
-/// A MCP server is a software application that expose specific capabilities
-/// to AI applications (agents) through standardized protocol interfaces.
-class MCPServer {
+/// A Model Context Protocol (MCP) server is a software application that expose
+/// specific capabilities to AI applications (agents) through standardized
+/// protocol interfaces.
+class MCPServer : public MCPToolRegistry, MCPResourceRegistry {
 public:
   /// @brief An initialization constructor.
   /// @param name is the server's name.
@@ -26,7 +30,9 @@ public:
   /// and parameterizing the server.
   MCPServer(const std::string_view name, const std::string_view version,
     const ProgramOptions& programOptions) noexcept;
-  
+
+  void setContextSpecificCapabilities();
+
   /// @brief Defines the kind of transport for MCP requests and responses.
   /// @param mcpTransport is an instance of a class that implements MCPTransport. 
   void setTransport(std::unique_ptr<MCPTransport> mcpTransport);
@@ -46,21 +52,22 @@ public:
   json handleRequest(const json &request) noexcept;
 
   void registerTool(const std::string& toolName,
-                    const std::string& description,
-                    const json& inputSchema,
-                    std::function<json(const json&)> handler);
+    const std::string& description,
+    const json& inputSchema,
+    std::function<json(const json&)> handler) override;
 
   void registerResource(const std::string& resourceName,
-                        const std::string& uri,
-                        const std::string& description,
-                        const std::string& mimeType,
-                        std::function<json()> handler);
+    const std::string& uri,
+    const std::string& description,
+    const std::string& mimeType,
+    std::function<json()> handler) override;
 
   MCPServer() = delete;
 
 private:
     void setupCapabilities() noexcept;
     void registerEchoTool();
+    void registerSpecificTools();
     json performInitialization(const json& parameters);
     json determineListOfAvailableTools() const;
     json callTool(const json &parameters);
@@ -95,6 +102,7 @@ private:
     std::map<std::string, ResourceDefinition> resources_;
 
     std::unique_ptr<MCPTransport> mcpTransport_;
+    std::unique_ptr<HttpToolClient> httpClient_;
 
     std::string name_;
     std::string version_;

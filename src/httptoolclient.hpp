@@ -10,8 +10,8 @@
 using json = nlohmann::json;
 using Headers = std::map<std::string, std::string>;
 
-/// @brief HTTP client for external tool calls
-class HttpToolClient final {
+/// @brief HTTP client for external tool calls.
+class HttpToolClient {
 public:
     /// @brief This method requests a representation of the specified resource (HTTP GET).
     /// @param url identifies the target resource of the request.
@@ -42,12 +42,14 @@ public:
 
     ~HttpToolClient();
 
-private:
+protected:
   json performHttpRequest(const std::string& method, const std::string& url,
                           const std::string& body, const Headers& headers);
+
+private:
   std::string extractBaseUrl(const std::string& fullUrl) const;
   std::string extractPathFromUrl(const std::string& fullUrl) const;
-  httplib::Client *retrieveClient(const std::string& baseUrl);
+  httplib::Client* retrieveClient(const std::string& baseUrl);
   void tryToParseResultAsJson(const httplib::Result& result, json& response) const;
 
   std::map<std::string, std::unique_ptr<httplib::Client>> clients_;

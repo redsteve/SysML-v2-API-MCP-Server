@@ -13,7 +13,7 @@ ProgramOptions CommandLineArgumentParser::parse(int argc, const char** argv) con
     .help("the uniform resource locator (url) specifying the address of an endpoint providing a\n"
       "SysML v2 REST API. Examples: https://api.localhost.tld, http://sysml2.domain.com:9000\n"
       "Default address is http://localhost:9000 if no explicit url has been specified.")
-    .default_value("http:://localhost:9000");
+    .default_value("http://localhost:9000");
 
   parser.add_argument("-l", "--loglevel")
     .help("the log level, which defines the scope (verbosity) of logging. Can be INFO, WARN or ERROR.\n"

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "mcptransport.hpp"
+
+// IMPORTANT: httplib.h must be included BEFORE Windows.h!
 #include <httplib.h>
+#include <Windows.h>
 
 #include <functional>
 #include <memory>

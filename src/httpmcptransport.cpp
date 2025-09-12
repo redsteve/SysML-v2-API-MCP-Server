@@ -3,7 +3,7 @@
 using namespace std;
 
 HttpMcpTransport::HttpMcpTransport(const string& serverName, const string serverVersion) :
-  HttpMcpTransport("http://127.0.0.1", 8080, serverName, serverVersion) { }
+  HttpMcpTransport("127.0.0.1", 8080, serverName, serverVersion) { }
 
 HttpMcpTransport::HttpMcpTransport(const std::string& hostAddress, const uint16_t port,
     const std::string& serverName, const std::string serverVersion) :
@@ -28,7 +28,9 @@ void HttpMcpTransport::start(function<json(const json&)> requestHandler) {
   running_ = true;
   serverThread_ = std::thread([this]() {
     std::cout << "Starting " << serverName_ << " on " << hostAddress_ << ":" << port_ << std::endl;
-    server_->listen(hostAddress_, port_);
+    if (! server_->listen(hostAddress_, port_)) {
+      std::cerr << "Fatal error: Server could not be started!";
+    }
   });
 
   std::this_thread::sleep_for(std::chrono::milliseconds(100));

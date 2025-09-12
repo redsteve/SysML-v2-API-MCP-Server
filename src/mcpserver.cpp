@@ -1,4 +1,5 @@
 #include "mcpserver.hpp"
+#include "sysmlv2/sysmlv2apiclient.hpp"
 #include "httptoolclient.hpp"
 
 #include <iostream>
@@ -13,7 +14,7 @@ MCPServer::MCPServer(const string_view name, const string_view version,
   const ProgramOptions& programOptions) noexcept :
   name_(name), version_(version), programOptions_(move(programOptions)) {
   setupCapabilities();
-  httpClient_ = std::make_unique<HttpToolClient>();
+  httpClient_ = std::make_unique<SysMLv2APIClient>(*this);
 }
 
 void MCPServer::setTransport(unique_ptr<MCPTransport> mcpTransport) {

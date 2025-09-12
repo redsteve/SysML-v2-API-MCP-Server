@@ -5,7 +5,7 @@ project(SysML-v2-API-MCP-Server VERSION 0.9 LANGUAGES CXX)
 set(TEST_NAME SysMLv2MCPServerTest)
 set(APP_NAME SysMLv2MCPServer)
 
-# Definition of the C++ language standard
+# Definition of the C++ language standard ISO/IEC 14882:2024 (C++23)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -43,6 +43,7 @@ add_executable(${TEST_NAME}
     src/httptoolclient.cpp
     src/mcpserver.cpp
     src/stdinstdoutmcptransport.cpp
+    src/sysmlv2/sysmlv2apiclient.cpp
 )
 #target_compile_definitions(${TEST_NAME} PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
 target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)
@@ -60,6 +61,7 @@ add_executable(${APP_NAME}
     src/httptoolclient.cpp
     src/mcpserver.cpp
     src/stdinstdoutmcptransport.cpp
+    src/sysmlv2/sysmlv2apiclient.cpp
 )
 #target_compile_definitions(${APP_NAME} PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
 target_include_directories(${APP_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)

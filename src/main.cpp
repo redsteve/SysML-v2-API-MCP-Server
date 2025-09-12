@@ -1,4 +1,5 @@
 #include "commandlineargumentparser.hpp"
+#include "httpmcptransport.hpp"
 #include "mcpserver.hpp"
 #include "stdinstdoutmcptransport.hpp"
 
@@ -10,7 +11,8 @@ int main(int argc, const char** argv) {
   ProgramOptions programOptions = parser.parse(argc, argv);
 
   MCPServer server { APPLICATION_NAME, APPLICATION_VERSION, programOptions };
-  server.setTransport(std::make_unique<StdinStdoutMcpTransport>());
+  server.setTransport(std::make_unique<HttpMcpTransport>(APPLICATION_NAME, APPLICATION_VERSION));
+  // server.setTransport(std::make_unique<StdinStdoutMcpTransport>());
   server.run();
 
   // Wait for interrupt
@@ -18,5 +20,7 @@ int main(int argc, const char** argv) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 
+  server.stop();
+  
   return EXIT_SUCCESS;
 }

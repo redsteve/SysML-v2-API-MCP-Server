@@ -76,7 +76,7 @@ void HttpMcpTransport::createEndpoints(function<json(const json&)> requestHandle
         {"id", nullptr},
         {"error", {
           {"code", -32700},
-          {"message", "Parse error: " + std::string(ex.what())}
+          {"message", "JSON parse error: " + std::string(ex.what())}
         }}
       };
       res.set_content(errorResponse.dump(), JSON_MIME_TYPE);

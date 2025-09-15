@@ -131,4 +131,8 @@ public:
 
 private:
   void setupSysMLv2APITools(MCPToolRegistry& mcpToolRegistry);
+  void setDefaultHeaders() noexcept;
+
+  std::string apiToken_;
+  std::map<std::string, std::string> defaultHeaders_;
 };

@@ -4,6 +4,7 @@ using namespace std;
 
 SysMLv2APIClient::SysMLv2APIClient(MCPToolRegistry &mcpToolRegistry) {
   setupSysMLv2APITools(mcpToolRegistry);
+  setDefaultHeaders();
 }
 
 json SysMLv2APIClient::getProjects(const int pageSize) {
@@ -530,4 +531,13 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
               {"content", {{{"type", "text"}, {"text", "Error: " + std::string(e.what())}}}}};
         }
       });
+}
+
+void SysMLv2APIClient::setDefaultHeaders() noexcept {
+  defaultHeaders_["Accept"] = JSON_MIME_TYPE;
+  defaultHeaders_["Content-Type"] = JSON_MIME_TYPE;
+
+  if (! apiToken_.empty()) {
+    defaultHeaders_["Authorization"] = "Bearer " + apiToken_;
+  }
 }

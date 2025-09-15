@@ -17,15 +17,20 @@ The analysis of the system context serves to answer the question: How will the s
 
 The following diagram uses UML (Unified Modeling Language) notation to depict the system context.
 
+![The System Context Diagram depicting our system with its external actors (users and external systems)](docs/images/sysml-v2-api-mcp-server-system-context-diagram.svg)
+
 ### Internal Structure (Building Blocks)
 
 The following UML class diagram depicts the components (building blocks) that made up the SysML v2 API MCP server. These are all C++ classes and interfaces (abstract classes without implementations).
 
-One of the main architecture goals is high modularity. The implementation has a modular structure and can be easily expanded with additional MCP transport layers (e.g., WebSocket, gRPC) or HTTP tools. In particular, the SysML v2-specific part of the implementation is small, clearly delineated, and loosely coupled with the rest of the server implementation. This ensures that the other code can be easily reused to create another MCP server.
+One of the main architecture goals is high modularity. The implementation has a modular structure and can be easily expanded with additional MCP transport layers (e.g., gRPC) or other/additional HTTP tool clients. In particular, the SysML v2-specific part of the implementation (see folder src/sysmlv2) is small, clearly delineated, and loosely coupled with the rest of the server implementation. This ensures that the other code can be easily reused, e.g., to create another MCP server for a different purpose.
 
 ### Dependencies
 
-The following SysML v2 view depicts the project's dependencies on third-party projects and libraries.
+The following UML package diagram depicts the project's dependencies on third-party projects and libraries.
+
+## Usage
+
 
 ## License
 

@@ -17,8 +17,12 @@ class CommandLineArgumentParser {
   /// an instance of type ProgramOptions.
   ProgramOptions parse(int argc, const char** argv) const;
 
+  CommandLineArgumentParser() = delete;
+
 private:
+  McpTransportKind determineMcpTransportKind(const std::string_view parsedTransport) const;
   LogLevel determineLogLevel(const std::string_view parsedLogLevel) const;
-  std::string applicationName_ { "n/a" };
-  std::string applicationVersion_ { "n/a" };
+
+  const std::string applicationName_ { "n/a" };
+  const std::string applicationVersion_ { "n/a" };
 };

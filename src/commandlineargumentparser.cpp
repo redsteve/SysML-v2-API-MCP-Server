@@ -9,11 +9,25 @@ CommandLineArgumentParser::CommandLineArgumentParser(const std::string_view appl
 ProgramOptions CommandLineArgumentParser::parse(int argc, const char** argv) const {
   argparse::ArgumentParser parser(applicationName_, applicationVersion_);
   
-  parser.add_argument("-u", "--url")
-    .help("the uniform resource locator (url) specifying the address of an endpoint providing a\n"
-      "SysML v2 REST API. Examples: https://api.localhost.tld, http://sysml2.domain.com:9000\n"
-      "Default address is http://localhost:9000 if no explicit url has been specified.")
-    .default_value("http://localhost:9000");
+  parser.add_argument("-t", "--transport")
+    .help("defines the transport layer for MCP requests/responses. Can be either one of the\n"
+      "values 'stdinout' or 'http'.")
+    .required()
+    .default_value("http");
+
+  parser.add_argument("-s", "--serverurl")
+    .help("the uniform resource locator (URL) specifying the address at which this MCP server should\n"
+    "be accessible if 'http' is chosen as MCP transport (default). Examples: 'api.hostname.tld',\n"
+    "'sysml2mcp.domain.com:8080'. Default is '127.0.0.1:8080' if no explicit URL has been specified.\n")
+    .required()
+    .default_value("127.0.0.1:8080");
+
+  parser.add_argument("-a", "--apiurl")
+    .help("the uniform resource locator (URL) specifying the address of a REST endpoint providing\n"
+      "a SysML v2 API for accessing models. Examples: 'api.hostname.tld', 'sysml2.domain.com:9000'.\n"
+      "Default is '127.0.0.1:9000' if no explicit URL has been specified.")
+    .required()
+    .default_value("127.0.0.1:9000");
 
   parser.add_argument("-l", "--loglevel")
     .help("the log level, which defines the scope (verbosity) of logging. Can be INFO, WARN or ERROR.\n"
@@ -23,17 +37,27 @@ ProgramOptions CommandLineArgumentParser::parse(int argc, const char** argv) con
   parser.parse_args(argc, argv);
 
   ProgramOptions options { };
-  options.url_ = parser.get("url");
+  options.sysmlv2ApiUrl_ = parser.get("apiurl");
+  options.mcpTransportUrl_ = parser.get("serverurl");
+  options.mcpTransportKind_ = determineMcpTransportKind(parser.get("transport"));
   options.logLevel_ = determineLogLevel(parser.get("loglevel"));
   return options;
 }
 
+McpTransportKind CommandLineArgumentParser::determineMcpTransportKind(const std::string_view parsedTransport) const {
+  if (parsedTransport == "stdinout") {
+    return McpTransportKind::stdinout;
+  } else {
+    return McpTransportKind::http;
+  }
+}
+
 LogLevel CommandLineArgumentParser::determineLogLevel(const std::string_view parsedLogLevel) const {
   if (parsedLogLevel == "INFO") {
-    return LogLevel::Info;
+    return LogLevel::info;
   } else if (parsedLogLevel == "WARN") {
-    return LogLevel::Warn;
+    return LogLevel::warn;
   } else {
-    return LogLevel::Error;
+    return LogLevel::error;
   }
 }

@@ -31,11 +31,13 @@ public:
   MCPServer(const std::string_view name, const std::string_view version,
     const ProgramOptions& programOptions) noexcept;
 
-  void setContextSpecificCapabilities();
-
   /// @brief Defines the kind of transport for MCP requests and responses.
   /// @param mcpTransport is an instance of a class that implements MCPTransport. 
-  void setTransport(std::unique_ptr<MCPTransport> mcpTransport);
+  void setMcpTransport(std::unique_ptr<MCPTransport> mcpTransport);
+
+  /// @brief Defines the HTTP client for the tool.
+  /// @param mcpTransport is an instance of a class HttpToolClient (...or derived classes). 
+  void setHttpToolClient(std::unique_ptr<HttpToolClient> httpToolClient);
 
   /// @brief Starts the server.
   void run();
@@ -67,7 +69,6 @@ public:
 private:
     void setupCapabilities() noexcept;
     void registerEchoTool();
-    void registerSpecificTools();
     json performInitialization(const json& parameters);
     json determineListOfAvailableTools() const;
     json callTool(const json &parameters);

@@ -17,11 +17,15 @@ MCPServer::MCPServer(const string_view name, const string_view version,
   httpClient_ = std::make_unique<SysMLv2APIClient>(*this);
 }
 
-void MCPServer::setTransport(unique_ptr<MCPTransport> mcpTransport) {
+void MCPServer::setMcpTransport(unique_ptr<MCPTransport> mcpTransport) {
   if (mcpTransport_) {
     mcpTransport_->stop();
   }
   mcpTransport_ = move(mcpTransport);
+}
+
+void MCPServer::setHttpToolClient(unique_ptr<HttpToolClient> httpToolClient) {
+  httpClient_ = move(httpToolClient);
 }
 
 void MCPServer::run() {
@@ -135,15 +139,10 @@ void MCPServer::registerEchoTool() {
   });
 }
 
-void MCPServer::registerSpecificTools() {
-
-}
-
 json MCPServer::performInitialization(const json& parameters) {
   if (! initialized_) {
     checkMcpProtocolVersion(parameters);
     registerEchoTool();
-    registerSpecificTools();
     initialized_ = true;
   }
   

@@ -45,7 +45,8 @@ public:
 protected:
   json performHttpRequest(const std::string& method, const std::string& url,
                           const std::string& body, const Headers& headers);
-
+  static const char* const JSON_MIME_TYPE;
+  
 private:
   std::string extractBaseUrl(const std::string& fullUrl) const;
   std::string extractPathFromUrl(const std::string& fullUrl) const;
@@ -54,6 +55,4 @@ private:
 
   std::map<std::string, std::unique_ptr<httplib::Client>> clients_;
   int timeoutInSeconds_{30};
-
-  static const char* const JSON_MIME_TYPE;
 };

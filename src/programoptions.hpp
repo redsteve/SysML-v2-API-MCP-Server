@@ -8,7 +8,7 @@ enum class McpTransportKind {
 };
 
 enum class LogLevel {
-  info, warn, error
+  trace, info, warn, error
 };
 
 /// @brief A data structure that contains the program options selected by the user.

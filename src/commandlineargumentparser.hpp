@@ -1,7 +1,7 @@
 #pragma once
 
 #include "programoptions.hpp"
-
+#include <argparse/argparse.hpp>
 #include <string>
 
 /// @brief 
@@ -15,11 +15,12 @@ class CommandLineArgumentParser {
 
   /// Parses the given command line arguments and returns the result as
   /// an instance of type ProgramOptions.
-  ProgramOptions parse(int argc, const char** argv) const;
+  ProgramOptions parse(int argc, const char **argv) const;
 
   CommandLineArgumentParser() = delete;
 
 private:
+  void addArgumentsToParser(argparse::ArgumentParser& parser) const;
   McpTransportKind determineMcpTransportKind(const std::string_view parsedTransport) const;
   LogLevel determineLogLevel(const std::string_view parsedLogLevel) const;
 

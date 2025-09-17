@@ -4,7 +4,7 @@
    color-rendering="auto"
    color-interpolation="auto"
    text-rendering="auto"
-   stroke="#000000"
+   stroke="#505050"
    stroke-linecap="square"
    width="18.133318in"
    stroke-miterlimit="10"
@@ -16,15 +16,15 @@
    stroke-width="1"
    viewBox="0 0 1740.7985 650.45136"
    height="6.7755351in"
-   font-family="Arial"
+   font-family="Roboto, Arial, sans-serif"
    font-style="normal"
    stroke-linejoin="miter"
    font-size="12px"
    stroke-dashoffset="0"
    image-rendering="auto"
    version="1.1"
-   id="svg94"
-   sodipodi:docname="Operational Context.svg"
+   id="svg01"
+   sodipodi:docname="sysml-v2-api-mcp-server-system-context-diagram.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -45,15 +45,15 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="in"
-     inkscape:zoom="0.3664245"
-     inkscape:cx="544.45049"
-     inkscape:cy="592.2093"
+     inkscape:zoom="0.732849"
+     inkscape:cx="569.01217"
+     inkscape:cy="382.07052"
      inkscape:window-width="1920"
      inkscape:window-height="1010"
      inkscape:window-x="-6"
      inkscape:window-y="-6"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g94" />
+     inkscape:current-layer="g64" />
   <defs
      id="genericDefs" />
   <g
@@ -61,86 +61,6 @@
      transform="translate(-9,-8.8647778)">
     <defs
        id="b2">
-      <radialGradient
-         transform="matrix(1.0 0.0 0.08009999990463257 1.0 0.0 -821.970703125)"
-         gradientUnits="userSpaceOnUse"
-         r="1.9874001"
-         cx="4.3684001"
-         id="a7"
-         cy="827.63647"
-         color-interpolation="sRGB"
-         fx="4.3684001"
-         fy="827.63647"
-         spreadMethod="pad">
-        <stop
-           stop-color="white"
-           offset="0%"
-           id="stop1" />
-        <stop
-           stop-color="rgb(176,179,204)"
-           offset="100%"
-           id="stop2" />
-      </radialGradient>
-      <radialGradient
-         transform="matrix(1.0 0.0 0.08009999990463257 0.6693000197410583 0.0 -820.0731811523438)"
-         gradientUnits="userSpaceOnUse"
-         r="1.988"
-         cx="5.0202999"
-         id="a8"
-         cy="1238.1462"
-         color-interpolation="sRGB"
-         fx="5.0202999"
-         fy="1238.1462"
-         spreadMethod="pad">
-        <stop
-           stop-color="white"
-           offset="0%"
-           id="stop3" />
-        <stop
-           stop-color="rgb(176,179,204)"
-           offset="100%"
-           id="stop4" />
-      </radialGradient>
-      <radialGradient
-         transform="matrix(1.0 0.0 0.08009999990463257 1.0 0.0 -821.970703125)"
-         gradientUnits="userSpaceOnUse"
-         r="5.1391001"
-         cx="11.8679"
-         id="a9"
-         cy="838.92853"
-         color-interpolation="sRGB"
-         fx="11.8679"
-         fy="838.92853"
-         spreadMethod="pad">
-        <stop
-           stop-color="white"
-           offset="0%"
-           id="stop5" />
-        <stop
-           stop-color="rgb(176,179,204)"
-           offset="100%"
-           id="stop6" />
-      </radialGradient>
-      <radialGradient
-         transform="matrix(1.0 0.0 0.08009999990463257 1.0 0.0 -821.970703125)"
-         gradientUnits="userSpaceOnUse"
-         r="2.5481999"
-         cx="8.8278999"
-         id="b1"
-         cy="833.59552"
-         color-interpolation="sRGB"
-         fx="8.8278999"
-         fy="833.59552"
-         spreadMethod="pad">
-        <stop
-           stop-color="white"
-           offset="0%"
-           id="stop7" />
-        <stop
-           stop-color="rgb(176,179,204)"
-           offset="100%"
-           id="stop8" />
-      </radialGradient>
       <clipPath
          clipPathUnits="userSpaceOnUse"
          id="a1">
@@ -150,220 +70,11 @@
       </clipPath>
       <clipPath
          clipPathUnits="userSpaceOnUse"
-         id="a2">
-        <path
-           d="M 30.9617,-6.0223 893.5302,99.5074 854.1843,421.1095 -8.3842,315.5798 Z"
-           id="path9" />
-      </clipPath>
-      <clipPath
-         clipPathUnits="userSpaceOnUse"
          id="a3">
         <path
            d="M 0,0 H 879 V 334 H 0 Z"
            id="path10" />
       </clipPath>
-      <clipPath
-         clipPathUnits="userSpaceOnUse"
-         id="a5">
-        <path
-           d="M -457.1875,-10.45 H 691.0062 V 425.8375 H -457.1875 Z"
-           id="path11" />
-      </clipPath>
-      <clipPath
-         clipPathUnits="userSpaceOnUse"
-         id="a6">
-        <path
-           d="M 0,0 V 20.9 H 20.9 V 0 Z"
-           id="path12" />
-      </clipPath>
-      <g
-         fill-opacity="1"
-         color-rendering="auto"
-         color-interpolation="auto"
-         text-rendering="auto"
-         stroke="#000000"
-         id="a4"
-         stroke-linecap="square"
-         stroke-miterlimit="10"
-         shape-rendering="auto"
-         stroke-opacity="1"
-         fill="#000000"
-         stroke-dasharray="none"
-         font-weight="normal"
-         stroke-width="1"
-         font-family="Arial"
-         font-style="normal"
-         stroke-linejoin="miter"
-         font-size="12px"
-         stroke-dashoffset="0"
-         image-rendering="auto">
-        <g
-           stroke-linecap="butt"
-           font-size="13px"
-           fill="#ffffff"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke-linejoin="round"
-           stroke="#ffffff"
-           id="g14">
-          <path
-             d="m 20.45,20.45 h -20 v -20 h 14.667 l 5.333,5.333 z"
-             stroke="none"
-             clip-path="url(#a6)"
-             id="path13" />
-          <path
-             fill="none"
-             stroke-miterlimit="5"
-             d="m 20.45,20.45 h -20 v -20 h 14.667 l 5.333,5.333 z"
-             clip-path="url(#a6)"
-             stroke="#878787"
-             stroke-linejoin="miter"
-             id="path14" />
-        </g>
-        <g
-           font-size="13px"
-           stroke-linecap="butt"
-           fill="url(#a7)"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke="url(#a7)"
-           stroke-miterlimit="5"
-           id="g16">
-          <path
-             d="M 6.9,4.8 C 6.9,5.8 6.1,6.602 5.1,6.602 4.1,6.602 3.2,5.8 3.2,4.8 3.2,3.8 4,3 5,3 6,3 6.8,3.8 6.8,4.8 Z"
-             stroke="none"
-             clip-path="url(#a6)"
-             id="path15" />
-          <path
-             fill="none"
-             d="M 6.9,4.8 C 6.9,5.8 6.1,6.602 5.1,6.602 4.1,6.602 3.2,5.8 3.2,4.8 3.2,3.8 4,3 5,3 6,3 6.8,3.8 6.8,4.8 Z"
-             stroke-width="0.6"
-             clip-path="url(#a6)"
-             stroke="#4d4d4d"
-             id="path16" />
-        </g>
-        <g
-           stroke-linecap="butt"
-           font-size="13px"
-           fill="url(#a8)"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke="url(#a8)"
-           stroke-width="0.6"
-           stroke-miterlimit="5"
-           id="g18">
-          <path
-             d="m 5.1,6.7 v 3.8"
-             stroke="none"
-             clip-path="url(#a6)"
-             id="path17" />
-          <path
-             fill="none"
-             d="m 5.1,6.7 v 3.8"
-             clip-path="url(#a6)"
-             stroke="#4d4d4d"
-             id="path18" />
-        </g>
-        <g
-           stroke-linecap="butt"
-           font-size="13px"
-           fill="#4d4d4d"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke="#4d4d4d"
-           stroke-width="0.6"
-           stroke-miterlimit="5"
-           id="g19">
-          <path
-             fill="none"
-             d="M 2.2,12.4 5.1,10.1 8,12.3"
-             clip-path="url(#a6)"
-             id="path19" />
-        </g>
-        <g
-           stroke-linecap="butt"
-           font-size="13px"
-           fill="#4d4d4d"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke="#4d4d4d"
-           stroke-width="0.6"
-           stroke-miterlimit="5"
-           id="g20">
-          <path
-             fill="none"
-             d="M 1.8,8.3 H 8.3"
-             clip-path="url(#a6)"
-             id="path20" />
-        </g>
-        <g
-           stroke-linecap="butt"
-           font-size="13px"
-           fill="url(#a9)"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke="url(#a9)"
-           stroke-width="0.6"
-           stroke-miterlimit="5"
-           id="g22">
-          <path
-             d="m 19,15.3 c 0,1.7 -1.9,3.1 -4.3,3.1 -2.4,0 -4.3,-1.4 -4.3,-3.1 0,-1.698 1.898,-3.1 4.3,-3.1 2.402,0 4.3,1.4 4.3,3.1 z"
-             stroke="none"
-             clip-path="url(#a6)"
-             id="path21" />
-          <path
-             fill="none"
-             d="m 19,15.3 c 0,1.7 -1.9,3.1 -4.3,3.1 -2.4,0 -4.3,-1.4 -4.3,-3.1 0,-1.698 1.898,-3.1 4.3,-3.1 2.402,0 4.3,1.4 4.3,3.1 z"
-             clip-path="url(#a6)"
-             stroke="#4d4d4d"
-             id="path22" />
-        </g>
-        <g
-           stroke-linecap="butt"
-           font-size="13px"
-           fill="url(#b1)"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke="url(#b1)"
-           stroke-width="0.6"
-           stroke-miterlimit="5"
-           id="g24">
-          <path
-             d="m 8.1,8.2 4.198,4.5"
-             stroke="none"
-             clip-path="url(#a6)"
-             id="path23" />
-          <path
-             fill="none"
-             d="m 8.1,8.2 4.198,4.5"
-             clip-path="url(#a6)"
-             stroke="#4d4d4d"
-             id="path24" />
-        </g>
-        <g
-           stroke-linecap="butt"
-           font-size="13px"
-           fill="#ffffff"
-           text-rendering="geometricPrecision"
-           font-family="Roboto"
-           stroke="#ffffff"
-           stroke-width="0.6"
-           stroke-miterlimit="5"
-           id="g26">
-          <path
-             d="M 15.117,5.783 H 20.45 L 15.117,0.45 Z"
-             stroke="none"
-             clip-path="url(#a6)"
-             id="path25" />
-          <path
-             fill="none"
-             d="M 15.117,5.783 H 20.45 L 15.117,0.45 Z"
-             stroke-width="1"
-             clip-path="url(#a6)"
-             stroke="#878787"
-             id="path26" />
-        </g>
-      </g>
     </defs>
     <rect
        x="0"
@@ -424,7 +135,7 @@
        stroke="none"
        id="text32"
        transform="scale(2)"
-       style="font-size:13px;font-family:Roboto;fill:#595959;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">SysML v2 API MCP-Server System Context</text>
+       style="font-size:13px;font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">SysML v2 API MCP-Server System Context</text>
     <text
        x="325.54559"
        xml:space="preserve"
@@ -444,7 +155,7 @@
        stroke="none"
        id="text34"
        transform="matrix(2,0,0,2,-56,0)"
-       style="font-size:13px;font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Operational Context</text>
+       style="font-size:13px;font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Operational Context</text>
     <text
        x="478.73981"
        xml:space="preserve"
@@ -464,7 +175,7 @@
        stroke="none"
        id="text36"
        transform="scale(2)"
-       style="font-size:13px;font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">[Package] </text>
+       style="font-size:13px;font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">[Package] </text>
     <text
        x="86.689903"
        xml:space="preserve"
@@ -485,7 +196,7 @@
        letter-spacing="-0.4px"
        id="text38"
        transform="scale(2)"
-       style="font-size:13px;font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">uc </text>
+       style="font-size:13px;font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">uc </text>
     <text
        x="28.103701"
        y="21.622101"
@@ -506,7 +217,7 @@
        stroke="none"
        id="text40"
        transform="matrix(2,0,0,2,-70,0)"
-       style="font-size:13px;font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision"> ]</text>
+       style="font-size:13px;font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision"> ]</text>
     <text
        x="491.93491"
        xml:space="preserve"
@@ -546,7 +257,7 @@
        stroke="none"
        id="text44"
        transform="matrix(2,0,0,2,-14,0)"
-       style="font-size:13px;font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">[ </text>
+       style="font-size:13px;font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">[ </text>
     <text
        x="347.93491"
        xml:space="preserve"
@@ -619,7 +330,7 @@
          stroke="none"
          id="text48"
          transform="matrix(2,0,0,2,-0.11910688,0)"
-         style="font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">«system»</text>
+         style="font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">«system»</text>
     </g>
     <text
        x="451.18869"
@@ -837,17 +548,12 @@
          clip-path="url(#a3)"
          stroke="none"
          id="text63"
-         transform="translate(17.750389,6.3740463)"><tspan
+         transform="translate(17.950389,16.306664)"><tspan
            sodipodi:role="line"
            id="tspan94"
-           x="63.779591"
-           y="109.6699"
-           style="text-align:center;text-anchor:middle">MCP Client</tspan><tspan
-           sodipodi:role="line"
-           id="tspan95"
            x="63.57959"
-           y="127.1699"
-           style="text-align:center;text-anchor:middle">(Host)</tspan></text>
+           y="109.6699"
+           style="text-align:center;text-anchor:middle">MCP Host</tspan></text>
       <text
          x="137.7381"
          xml:space="preserve"
@@ -866,7 +572,7 @@
        stroke="none"
        id="text65"
        transform="scale(2)"
-       style="font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">«external system»</text>
+       style="font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">«external system»</text>
     <text
        x="127.5008"
        xml:space="preserve"
@@ -1004,7 +710,7 @@
        stroke="none"
        id="text74"
        transform="scale(2)"
-       style="font-family:Roboto;fill:#404040;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">«external system»</text>
+       style="font-family:Roboto;fill:#505050;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">«external system»</text>
     <text
        x="820.50079"
        xml:space="preserve"
@@ -1128,7 +834,7 @@
        stroke="#404040"
        id="path84"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <text
        x="605.5"
        y="126.5742"
@@ -1139,7 +845,7 @@
        letter-spacing="-0.4px"
        id="text84"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">HTTP/REST</text>
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">HTTP/REST</text>
     <text
        x="666.66962"
        y="126.5742"
@@ -1150,7 +856,7 @@
        letter-spacing="-0.4px"
        id="text85"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <text
        x="561"
        y="102.5742"
@@ -1161,7 +867,7 @@
        letter-spacing="-0.4px"
        id="text86"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Response</text>
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Response</text>
     <text
        x="611.45428"
        y="102.5742"
@@ -1172,7 +878,7 @@
        letter-spacing="-0.4px"
        id="text87"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <text
        x="666.5"
        y="102.5742"
@@ -1183,7 +889,7 @@
        letter-spacing="-0.4px"
        id="text88"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Request</text>
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Request</text>
     <text
        x="708.40698"
        y="102.5742"
@@ -1194,7 +900,7 @@
        letter-spacing="-0.4px"
        id="text89"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <polygon
        fill="#404040"
        clip-path="url(#a3)"
@@ -1202,7 +908,7 @@
        stroke="none"
        id="polygon89"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <polygon
        fill="none"
        clip-path="url(#a3)"
@@ -1210,7 +916,7 @@
        stroke="#404040"
        id="polygon90"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <polygon
        fill="#404040"
        clip-path="url(#a3)"
@@ -1218,7 +924,7 @@
        stroke="none"
        id="polygon91"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <polygon
        fill="none"
        clip-path="url(#a3)"
@@ -1226,7 +932,7 @@
        stroke="#404040"
        id="polygon92"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <path
        fill="none"
        d="m 437,164 1,75"
@@ -1234,7 +940,7 @@
        stroke="#404040"
        id="path92"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
     <text
        x="443.5"
        y="200.5742"
@@ -1245,7 +951,7 @@
        letter-spacing="-0.4px"
        id="text92"
        transform="matrix(2,0,0,2,-6,10)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Command Line Interface</text>
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision">Command Line Interface</text>
     <text
        x="567.24487"
        y="200.5742"
@@ -1256,10 +962,10 @@
        letter-spacing="-0.4px"
        id="text93"
        transform="scale(2)"
-       style="font-family:Roboto;stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
+       style="stroke-linecap:butt;stroke-linejoin:round;text-rendering:geometricPrecision" />
   </g>
   <metadata
-     id="metadata96">
+     id="metadata01">
     <rdf:RDF>
       <cc:Work
          rdf:about="">

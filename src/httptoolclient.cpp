@@ -1,4 +1,5 @@
 #include "httptoolclient.hpp"
+#include <spdlog/spdlog.h>
 #include <regex>
 
 using namespace std;
@@ -27,12 +28,10 @@ json HttpToolClient::httpDelete(const string& url, const Headers& headers) {
   return performHttpRequest("DELETE", url, "", headers);
 }
 
-HttpToolClient::~HttpToolClient() {
-  clients_.clear();
-}
-
 json HttpToolClient::performHttpRequest(const string& method, const string& url,
   const string& body, const Headers& headers) {
+  spdlog::trace("Try to perform HTTP request with method='{0}', url='{1}', body='{2}'.",
+    method, url, body);
   try {
     const string baseUrl = extractBaseUrl(url);
     if (baseUrl.empty()) {
@@ -76,20 +75,20 @@ json HttpToolClient::performHttpRequest(const string& method, const string& url,
     }
 
     tryToParseResultAsJson(result, response);
-
+    spdlog::trace("HTTP request successful. Response was: '{}'.", response.dump());
     return response;
 
-  } catch (const std::exception& e) {
+  } catch (const std::exception& ex) {
+    spdlog::error("HTTP request failed! Reason: {}", ex.what());
     return {
       {"error", true},
-      {"message", e.what()},
+      {"message", ex.what()},
       {"status", -1}
     };
   }
 }
 
-string HttpToolClient::extractBaseUrl(const string& fullUrl) const
-{
+string HttpToolClient::extractBaseUrl(const string& fullUrl) const {
   const regex url_regex(R"((https?://[^/]+))");
   smatch match;
   if (regex_search(fullUrl, match, url_regex) && match.size() > 1) {
@@ -108,13 +107,14 @@ string HttpToolClient::extractPathFromUrl(const string& fullUrl) const {
 }
 
 httplib::Client* HttpToolClient::retrieveClient(const std::string& baseUrl) {
-  if (clients_.find(baseUrl) == clients_.end()) {
-    clients_[baseUrl] = std::make_unique<httplib::Client>(baseUrl);
-    clients_[baseUrl]->set_read_timeout(timeoutInSeconds_);
-    clients_[baseUrl]->set_write_timeout(timeoutInSeconds_);
-    clients_[baseUrl]->set_connection_timeout(timeoutInSeconds_);
+  if (httpClients_.find(baseUrl) == httpClients_.end()) {
+    httpClients_[baseUrl] = std::make_unique<httplib::Client>(baseUrl);
+    httpClients_[baseUrl]->set_read_timeout(timeoutInSeconds_);
+    httpClients_[baseUrl]->set_write_timeout(timeoutInSeconds_);
+    httpClients_[baseUrl]->set_connection_timeout(timeoutInSeconds_);
+    spdlog::info("New HTTP client created for server at URL {}.", baseUrl);
   }
-  return clients_[baseUrl].get();
+  return httpClients_[baseUrl].get();
 }
 
 void HttpToolClient::tryToParseResultAsJson(const httplib::Result& result, json& response) const {

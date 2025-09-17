@@ -1,4 +1,5 @@
 #include "stdinstdoutmcptransport.hpp"
+#include <spdlog/spdlog.h>
 #include <iostream>
 
 using namespace std;
@@ -6,29 +7,30 @@ using namespace std;
 void StdinStdoutMcpTransport::start(function<json(const json&)> requestHandler) {
   if (running_)
     return;
-  
+
   running_ = true;
+  spdlog::info("Starting worker thread waiting for requests via stdin...");
   thread_ = thread([this, requestHandler]() {
     string line;
     while (running_ && std::getline(std::cin, line)) {
       try {
-        if (line.empty()) continue;
-        
+        if (line.empty())
+          continue;
+          
         json request = json::parse(line);
+        spdlog::info("Request is: {}", request.dump());
         json response = requestHandler(request);
-        
-        cout << response.dump() << endl;
-        cout.flush();
+        spdlog::info("Received response from request handler: {}", response.dump());
       } catch (const exception& ex) {
         const json errorResponse = {
           {"jsonrpc", "2.0"},
           {"id", nullptr},
           {"error", {
             {"code", -32700},
-            {"message", "Error while parsing received JSON text: " + std::string(ex.what())}
+            {"message", std::string(ex.what())}
           }}
         };
-        std::cout << errorResponse.dump() << std::endl;
+        spdlog::error("Error while parsing received data from stdin: {}", errorResponse.dump());
       }
     }
   });

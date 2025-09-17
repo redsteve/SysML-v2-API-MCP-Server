@@ -13,7 +13,8 @@ using Identifier = std::string;
 /// SysML v2 API for accessing SysML v2 model repositories.
 class SysMLv2APIClient : public HttpToolClient {
 public:
-  explicit SysMLv2APIClient(MCPToolRegistry& mcpToolRegistry);
+  SysMLv2APIClient(MCPToolRegistry& mcpToolRegistry,
+    const std::string_view sysmlv2ApiUrl);
 
 #pragma region Project Service Operations
   /// @brief Get all projects.
@@ -133,6 +134,7 @@ private:
   void setupSysMLv2APITools(MCPToolRegistry& mcpToolRegistry);
   void setDefaultHeaders() noexcept;
 
+  const std::string sysmlv2ApiBaseUrl_;
   std::string apiToken_;
   std::map<std::string, std::string> defaultHeaders_;
 };

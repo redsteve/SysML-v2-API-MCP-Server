@@ -1,8 +1,10 @@
 #include "sysmlv2apiclient.hpp"
+#include <spdlog/spdlog.h>
 
 using namespace std;
 
-SysMLv2APIClient::SysMLv2APIClient(MCPToolRegistry &mcpToolRegistry) {
+SysMLv2APIClient::SysMLv2APIClient(MCPToolRegistry& mcpToolRegistry,
+  const string_view sysmlv2ApiUrl) : sysmlv2ApiBaseUrl_(sysmlv2ApiUrl) {
   setupSysMLv2APITools(mcpToolRegistry);
   setDefaultHeaders();
 }
@@ -12,267 +14,222 @@ json SysMLv2APIClient::getProjects(const int pageSize) {
   if (pageSize > 0) {
     path += "?page[size]=" + std::to_string(pageSize);
   }
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getProjectById(const Identifier &projectId) {
+json SysMLv2APIClient::getProjectById(const Identifier& projectId) {
   string path = "/projects/" + projectId;
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::createProject(const std::string &name, const std::string &description)
-{
+json SysMLv2APIClient::createProject(const std::string& name, const std::string& description) {
   json body = {{"name", name}};
-  if (!description.empty())
-  {
+  if (!description.empty()) {
     body["description"] = description;
   }
-  return httpPost("/projects", body);
-}
+  return httpPost(sysmlv2ApiBaseUrl_ + "/projects", body);
+} 
 
 json SysMLv2APIClient::updateProject(const Identifier &projectId,
-                                     const std::string &name,
-                                     const std::string &description)
-{
+  const std::string &name, const std::string &description) {
   json body = json::object();
-  if (!name.empty())
-  {
+  if (!name.empty()) {
     body["name"] = name;
   }
-  if (!description.empty())
-  {
+  if (!description.empty()) {
     body["description"] = description;
   }
 
   std::string path = "/projects/" + projectId;
-  return httpPut("PUT", path, body);
+  return httpPut("PUT", sysmlv2ApiBaseUrl_ + path, body);
 }
 
-json SysMLv2APIClient::deleteProject(const Identifier &projectId)
-{
+json SysMLv2APIClient::deleteProject(const Identifier &projectId) {
   const string path = "/projects/" + projectId;
-  return httpDelete(path);
+  return httpDelete(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getElements(const Identifier &projectId,
-                                   const std::string &commitId, int pageSize)
-{
+json SysMLv2APIClient::getElements(const Identifier &projectId, const std::string &commitId,
+  int pageSize) {
   string path = "/projects/" + projectId + "/commits/" + commitId + "/elements";
-  if (pageSize > 0)
-  {
+  if (pageSize > 0) {
     path += "?page[size]=" + std::to_string(pageSize);
   }
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 json SysMLv2APIClient::getElementById(const Identifier &projectId, const Identifier &commitId,
-                                      const Identifier &elementId)
-{
+  const Identifier &elementId) {
   string path = "/projects/" + projectId + "/commits/" + commitId + "/elements/" + elementId;
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 json SysMLv2APIClient::getRootElements(const Identifier &projectId, const Identifier &commitId,
-                                       const int pageSize)
-{
+  const int pageSize) {
   std::string path = "/projects/" + projectId + "/commits/" + commitId + "/roots";
-  if (pageSize > 0)
-  {
+  if (pageSize > 0) {
     path += "?page[size]=" + std::to_string(pageSize);
   }
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 json SysMLv2APIClient::getRelationshipsByRelatedElement(const Identifier &projectId,
-                                                        const Identifier &commitId, const Identifier &relatedElementId, const Identifier &direction)
-{
+  const Identifier &commitId, const Identifier &relatedElementId, const Identifier &direction) {
   std::string path = "/projects/" + projectId + "/commits/" + commitId +
                      "/elements/" + relatedElementId + "/relationships";
   path += "?direction=" + direction;
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getCommits(const Identifier &projectId, const int pageSize)
-{
+json SysMLv2APIClient::getCommits(const Identifier &projectId, const int pageSize) {
   std::string path = "/projects/" + projectId + "/commits";
-  if (pageSize > 0)
-  {
+  if (pageSize > 0) {
     path += "?page[size]=" + std::to_string(pageSize);
   }
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getCommitById(const Identifier &projectId, const Identifier &commitId)
-{
+json SysMLv2APIClient::getCommitById(const Identifier &projectId, const Identifier &commitId) {
   std::string path = "/projects/" + projectId + "/commits/" + commitId;
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 json SysMLv2APIClient::getCommitChanges(const Identifier &projectId,
-                                        const Identifier &commitId, const std::vector<std::string> &changeTypes)
-{
+  const Identifier &commitId, const std::vector<std::string> &changeTypes) {
   std::string path = "/projects/" + projectId + "/commits/" + commitId + "/changes";
 
-  if (!changeTypes.empty())
-  {
+  if (!changeTypes.empty()) {
     path += "?changeTypes=";
-    for (size_t index = 0; index < changeTypes.size(); ++index)
-    {
+    for (size_t index = 0; index < changeTypes.size(); ++index) {
       if (index > 0)
         path += ",";
       path += changeTypes[index];
     }
   }
-
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getBranches(const Identifier &projectId)
-{
+json SysMLv2APIClient::getBranches(const Identifier &projectId) {
   std::string path = "/projects/" + projectId + "/branches";
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getBranchById(const Identifier &projectId, const Identifier &branchId)
-{
+json SysMLv2APIClient::getBranchById(const Identifier &projectId, const Identifier &branchId) {
   std::string path = "/projects/" + projectId + "/branches/" + branchId;
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-// Create branch
 json SysMLv2APIClient::createBranch(const Identifier &projectId,
-                                    const std::string &branchName, const Identifier &headCommitId)
-{
+  const std::string &branchName, const Identifier &headCommitId) {
   json body = {
-      {"name", branchName},
-      {"head", headCommitId}};
+    {"name", branchName},
+    {"head", headCommitId} };
 
   const std::string path = "/projects/" + projectId + "/branches";
-  return httpPost(path, body);
+  return httpPost(sysmlv2ApiBaseUrl_ + path, body);
 }
 
-// Delete branch
-json SysMLv2APIClient::deleteBranch(const Identifier &projectId, const Identifier &branchId)
-{
+json SysMLv2APIClient::deleteBranch(const Identifier &projectId, const Identifier &branchId) {
   const std::string path = "/projects/" + projectId + "/branches/" + branchId;
-  return httpDelete(path);
+  return httpDelete(sysmlv2ApiBaseUrl_ + path);
 }
 
-// Get tags
-json SysMLv2APIClient::getTags(const Identifier &projectId)
-{
+json SysMLv2APIClient::getTags(const Identifier &projectId) {
   const std::string path = "/projects/" + projectId + "/tags";
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 // Get tag by ID
-json SysMLv2APIClient::getTagById(const Identifier &projectId, const Identifier &tagId)
-{
+json SysMLv2APIClient::getTagById(const Identifier &projectId, const Identifier &tagId) {
   std::string path = "/projects/" + projectId + "/tags/" + tagId;
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 // Create tag
 json SysMLv2APIClient::createTag(const Identifier &projectId, const std::string &tagName,
-                                 const Identifier &taggedCommitId)
-{
+  const Identifier &taggedCommitId) {
   const json body = {
-      {"name", tagName},
-      {"taggedCommit", taggedCommitId}};
+    {"name", tagName},
+    {"taggedCommit", taggedCommitId} };
 
   const std::string path = "/projects/" + projectId + "/tags";
-  return httpPost(path, body);
+  return httpPost(sysmlv2ApiBaseUrl_ + path, body);
 }
 
-json SysMLv2APIClient::deleteTag(const Identifier &projectId, const Identifier &tagId)
-{
+json SysMLv2APIClient::deleteTag(const Identifier &projectId, const Identifier &tagId) {
   const std::string path = "/projects/" + projectId + "/tags/" + tagId;
-  return httpDelete(path);
+  return httpDelete(sysmlv2ApiBaseUrl_ + path);
 }
 
 // Create commit
 json SysMLv2APIClient::createCommit(const Identifier &projectId, const json &changes,
-                                    const Identifier &branchId, const std::string &description)
-{
+  const Identifier &branchId, const std::string &description) {
   json body = {
-      {"change", changes}};
+    {"change", changes} };
 
-  if (!description.empty())
-  {
+  if (!description.empty()) {
     body["description"] = description;
   }
 
   std::string path = "/projects/" + projectId + "/commit";
-  if (!branchId.empty())
-  {
+  if (!branchId.empty()) {
     path += "?branchId=" + branchId;
   }
 
-  return httpPost(path, body);
+  return httpPost(sysmlv2ApiBaseUrl_ + path, body);
 }
 
 json SysMLv2APIClient::diffCommits(const Identifier &projectId, const Identifier &baseCommitId,
-                                   const Identifier &compareCommitId, const std::vector<std::string> &changeTypes)
-{
+  const Identifier &compareCommitId, const std::vector<std::string> &changeTypes) {
   std::string path = "/projects/" + projectId + "/commits/" + compareCommitId + "/diff";
   path += "?baseCommit=" + baseCommitId;
 
-  if (!changeTypes.empty())
-  {
+  if (!changeTypes.empty()) {
     path += "&changeTypes=";
-    for (size_t index = 0; index < changeTypes.size(); ++index)
-    {
+    for (size_t index = 0; index < changeTypes.size(); ++index) {
       if (index > 0)
         path += ",";
       path += changeTypes[index];
     }
   }
-
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getQueries(const Identifier &projectId)
-{
+json SysMLv2APIClient::getQueries(const Identifier &projectId) {
   std::string path = "/projects/" + projectId + "/queries";
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
-json SysMLv2APIClient::getQueryById(const Identifier &projectId, const Identifier &queryId)
-{
+json SysMLv2APIClient::getQueryById(const Identifier &projectId, const Identifier &queryId) {
   std::string path = "/projects/" + projectId + "/queries/" + queryId;
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 json SysMLv2APIClient::createQuery(const Identifier &projectId, const std::string &name,
-                                   const json &queryDefinition)
-{
+  const json &queryDefinition) {
   json body = queryDefinition;
   body["name"] = name;
 
   std::string path = "/projects/" + projectId + "/queries";
-  return httpPost(path, body);
+  return httpPost(sysmlv2ApiBaseUrl_ + path, body);
 }
 
 json SysMLv2APIClient::executeQueryById(const Identifier &projectId, const Identifier &queryId,
-                                        const Identifier &commitId)
-{
+  const Identifier &commitId) {
   std::string path = "/projects/" + projectId + "/queries/" + queryId + "/results";
-  if (!commitId.empty())
-  {
+  if (!commitId.empty()) {
     path += "?commitId=" + commitId;
   }
-  return httpGet(path);
+  return httpGet(sysmlv2ApiBaseUrl_ + path);
 }
 
 json SysMLv2APIClient::executeQuery(const Identifier &projectId, const json &query,
-                                    const Identifier &commitId)
-{
+  const Identifier &commitId) {
   std::string path = "/projects/" + projectId + "/query-results";
-  if (!commitId.empty())
-  {
+  if (!commitId.empty()) {
     path += "?commitId=" + commitId;
   }
-  return httpPost(path, query);
+  return httpPost(sysmlv2ApiBaseUrl_ + path, query);
 }
 
 void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
@@ -301,7 +258,7 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
 
   mcpToolRegistry.registerTool(
       "sysml_get_project",
-      "Get specific SysML v2 project by ID.",
+      "Get one specific SysML v2 project by ID.",
       {{"type", "object"},
        {"properties", {{"projectId", {{"type", "string"}, {"description", "UUID of the project"}}}}},
        {"required", {"projectId"}}},
@@ -324,7 +281,7 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
 
   mcpToolRegistry.registerTool(
       "sysml_create_project",
-      "Create new SysML v2 project",
+      "Create a new SysML v2 project.",
       {{"type", "object"},
        {"properties", {{"name", {{"type", "string"}, {"description", "Name of the project"}}}, {"description", {{"type", "string"}, {"description", "Optional description of the project"}}}}},
        {"required", {"name"}}},
@@ -374,7 +331,7 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
 
   mcpToolRegistry.registerTool(
       "sysml_get_element",
-      "Get specific element by ID.",
+      "Get a specific element by ID.",
       {{"type", "object"},
        {"properties", {{"projectId", {{"type", "string"}, {"description", "UUID of the project"}}}, {"commitId", {{"type", "string"}, {"description", "UUID of the commit"}}}, {"elementId", {{"type", "string"}, {"description", "UUID of the element"}}}}},
        {"required", {"projectId", "commitId", "elementId"}}},
@@ -400,7 +357,7 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
 
   mcpToolRegistry.registerTool(
       "sysml_get_root_elements",
-      "Get root elements in a project.",
+      "Get root elements in a SysML project.",
       {{"type", "object"},
        {"properties", {{"projectId", {{"type", "string"}, {"description", "UUID of the project"}}}, {"commitId", {{"type", "string"}, {"description", "UUID of the commit"}}}}},
        {"required", {"projectId", "commitId"}}},
@@ -425,7 +382,7 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
 
   mcpToolRegistry.registerTool(
       "sysml_get_branches",
-      "Get all branches in a project.",
+      "Get all branches in a SysML project.",
       {{"type", "object"},
        {"properties", {{"projectId", {{"type", "string"}, {"description", "UUID of the project"}}}}},
        {"required", {"projectId"}}},
@@ -448,7 +405,7 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
 
   mcpToolRegistry.registerTool(
       "sysml_get_commits",
-      "Get commit history for a project.",
+      "Get commit history for a specific SysML project with a given ID.",
       {{"type", "object"},
        {"properties", {{"projectId", {{"type", "string"}, {"description", "UUID of the project"}}}, {"pageSize", {{"type", "integer"}, {"description", "Maximum number of commits per page"}, {"default", 50}}}}},
        {"required", {"projectId"}}},

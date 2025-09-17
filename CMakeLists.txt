@@ -7,27 +7,35 @@ set(APP_NAME SysMLv2MCPServer)
 
 # Definition of the C++ language standard ISO/IEC 14882:2024 (C++23)
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
 # === Dependencies ===
 
 include(FetchContent)
 
-# Get nlohmann::json (JSON library for modern C++)
+# Fetch nlohmann::json (JSON library for modern C++)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
 FetchContent_MakeAvailable(json)
 include_directories(${CMAKE_SOURCE_DIR}/build/_deps/json-src/include)
 
-# Get Catch2 unit test framework
+# Fetch spdlog C++ logging framework
+FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git GIT_TAG v1.15.3)
+FetchContent_MakeAvailable(spdlog)
+include_directories(${CMAKE_SOURCE_DIR}/build/_deps/spdlog-src/include)
+
+# Fetch Catch2 unit test framework
 FetchContent_Declare(catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2.git GIT_TAG v3.7.0)
 FetchContent_MakeAvailable(catch2)
 
-# Get latest argparse
+# Fetch latest argparse
 FetchContent_Declare(argparse GIT_REPOSITORY https://github.com/p-ranav/argparse.git)
 FetchContent_MakeAvailable(argparse)
 include_directories(${CMAKE_SOURCE_DIR}/build/_deps/argparse-src/include)
 
-# Get latest httplib C++ header-only cross platform HTTP/HTTPS library
+# Fetch httplib C++ header-only cross platform HTTP/HTTPS library
 FetchContent_Declare(httplib GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git GIT_TAG v0.15.3)
 FetchContent_MakeAvailable(httplib)
 
@@ -47,7 +55,7 @@ add_executable(${TEST_NAME}
 )
 #target_compile_definitions(${TEST_NAME} PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
 target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)
-target_link_libraries(${TEST_NAME} PRIVATE argparse ws2_32 Threads::Threads OpenSSL::SSL OpenSSL::Crypto Catch2::Catch2WithMain)
+target_link_libraries(${TEST_NAME} PRIVATE argparse spdlog::spdlog ws2_32 Threads::Threads OpenSSL::SSL OpenSSL::Crypto Catch2::Catch2WithMain)
 
 enable_testing()
 add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
@@ -65,7 +73,7 @@ add_executable(${APP_NAME}
 )
 #target_compile_definitions(${APP_NAME} PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
 target_include_directories(${APP_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/httplib-src)
-target_link_libraries(${APP_NAME} PRIVATE argparse ws2_32 Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(${APP_NAME} PRIVATE argparse spdlog::spdlog ws2_32 Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
 
 # === Compiler options ===
 

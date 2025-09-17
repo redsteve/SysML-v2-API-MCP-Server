@@ -103,7 +103,7 @@ private:
     std::map<std::string, ResourceDefinition> resources_;
 
     std::unique_ptr<MCPTransport> mcpTransport_;
-    std::unique_ptr<HttpToolClient> httpClient_;
+    std::unique_ptr<HttpToolClient> httpToolClient_;
 
     std::string name_;
     std::string version_;

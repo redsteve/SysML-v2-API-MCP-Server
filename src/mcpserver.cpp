@@ -2,7 +2,7 @@
 #include "sysmlv2/sysmlv2apiclient.hpp"
 #include "httptoolclient.hpp"
 
-#include <iostream>
+#include <spdlog/spdlog.h>
 
 using namespace std;
 
@@ -14,7 +14,8 @@ MCPServer::MCPServer(const string_view name, const string_view version,
   const ProgramOptions& programOptions) noexcept :
   name_(name), version_(version), programOptions_(move(programOptions)) {
   setupCapabilities();
-  httpClient_ = std::make_unique<SysMLv2APIClient>(*this);
+  httpToolClient_ = std::make_unique<SysMLv2APIClient>(*this,
+    programOptions_.sysmlv2ApiUrl_);
 }
 
 void MCPServer::setMcpTransport(unique_ptr<MCPTransport> mcpTransport) {
@@ -25,12 +26,12 @@ void MCPServer::setMcpTransport(unique_ptr<MCPTransport> mcpTransport) {
 }
 
 void MCPServer::setHttpToolClient(unique_ptr<HttpToolClient> httpToolClient) {
-  httpClient_ = move(httpToolClient);
+  httpToolClient_ = move(httpToolClient);
 }
 
 void MCPServer::run() {
   if (! mcpTransport_) {
-    throw runtime_error("No transport for MCP request/respones configured!");
+    throw runtime_error("No transport for MCP request/response configured!");
   }
   
   mcpTransport_->start([this](const json& request) {
@@ -81,6 +82,7 @@ json MCPServer::handleRequest(const json& request) noexcept {
 
   } catch (const exception& ex) {
     json id = request.value("id", nullptr);
+    spdlog::error("while handling request: {}", ex.what());
     return {
       {JSONPARAM_JSONRPC_VERSION, "2.0"},
       {"id", id},
@@ -144,6 +146,7 @@ json MCPServer::performInitialization(const json& parameters) {
     checkMcpProtocolVersion(parameters);
     registerEchoTool();
     initialized_ = true;
+    spdlog::debug("Initialization successful.");
   }
   
   return {
@@ -182,10 +185,11 @@ json MCPServer::callTool(const json& parameters) {
   const std::string toolName = parameters["name"];
   checkIfToolExists(toolName);
   json arguments = parameters.value("arguments", json::object());
-  
+  spdlog::trace("Calling tool named '{0}' with arguments: {1}.", toolName, arguments.dump());
   try {
     return invokeToolHandler(toolName, arguments);
   } catch (const exception& ex) {
+    spdlog::error("Something went wrong while invoking tool '{0}': {1}.", toolName, ex.what());
     return {
       {"content", {{
           {"type", "text"},
@@ -199,6 +203,7 @@ json MCPServer::callTool(const json& parameters) {
 
 json MCPServer::invokeToolHandler(const std::string& toolName, const json& arguments) {
   json result = tools_[toolName].handler_(arguments);
+  spdlog::trace("Tool '{0}' successfully called. Result is: {1}", toolName, result.dump());
   return {
     {"content", result.value("content", json::array())},
     {"isError", false}
@@ -249,7 +254,7 @@ json MCPServer::readResource(const json& parameters) {
 
 void MCPServer::checkIfServerIsInitialized() const {
   if (! initialized_) {
-    throw runtime_error("MCP Server not initialized!");
+    throw runtime_error("MCP Server not initialized! Call method 'initialize' first.");
   }
 }
 

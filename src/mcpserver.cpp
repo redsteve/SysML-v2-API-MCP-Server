@@ -50,6 +50,7 @@ bool MCPServer::isRunning() const noexcept {
 }
 
 json MCPServer::handleRequest(const json& request) noexcept {
+  spdlog::trace("<MCPServer::handleRequest> - request: {}", request.dump());
   try {
     checkJsonRpcVersion(request);
     checkIfParameterExists(JSONPARAM_METHOD, request);
@@ -73,7 +74,8 @@ json MCPServer::handleRequest(const json& request) noexcept {
     } else {
       throw runtime_error("Unknown method: " + method);
     }
-    
+    spdlog::trace("<MCPServer::handleRequest> - result: {}", result.dump());
+
     return {
       {JSONPARAM_JSONRPC_VERSION, "2.0"},
       {"id", id},
@@ -146,7 +148,8 @@ json MCPServer::performInitialization(const json& parameters) {
     checkMcpProtocolVersion(parameters);
     registerEchoTool();
     initialized_ = true;
-    spdlog::debug("Initialization successful.");
+    spdlog::info("Capability negotiation handshake successful.");
+    spdlog::info("MCP Host (client) is: {}.", parameters["clientInfo"].dump());
   }
   
   return {

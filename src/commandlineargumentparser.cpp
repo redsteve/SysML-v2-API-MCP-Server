@@ -15,6 +15,7 @@ ProgramOptions CommandLineArgumentParser::parse(int argc, const char** argv) con
   options.mcpTransportUrl_ = parser.get("serverurl");
   options.mcpTransportKind_ = determineMcpTransportKind(parser.get("transport"));
   options.logLevel_ = determineLogLevel(parser.get("loglevel"));
+  options.logFileName_ = parser.get("logfile");
   return options;
 }
 
@@ -37,12 +38,16 @@ void CommandLineArgumentParser::addArgumentsToParser(argparse::ArgumentParser &p
           "a SysML v2 API for accessing models. Examples: 'http://api.hostname.tld', 'http://sysml2.domain.com:9000'.\n"
           "Default is 'http://127.0.0.1:9000' if no explicit URL has been specified.")
     .required()
-    .default_value("http://127.0.0.1:9000");
+    .default_value("http://sysml2.intercax.com:9000");
 
   parser.add_argument("-l", "--loglevel")
     .help("the log level, which defines the scope (verbosity) of logging. Can be INFO, WARN or ERROR.\n"
           "ERROR is the default log level if no explicit level has been specified.")
     .default_value("ERROR");
+
+  parser.add_argument("-f", "--logfile")
+    .help("the name of the logfile.")
+    .default_value("mcpsrv_logfile.log");
 }
 
 McpTransportKind CommandLineArgumentParser::determineMcpTransportKind(const std::string_view parsedTransport) const {

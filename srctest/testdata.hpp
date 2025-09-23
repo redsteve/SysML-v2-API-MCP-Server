@@ -2,6 +2,7 @@
 
 /// @file Provides prepared test data.
 
+#include "../src/globals.hpp"
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -10,23 +11,11 @@ const char* const SERVER_NAME = "SysMLv2MCPServer4Testing";
 const char* const SERVER_VERSION = "0.0.0";
 
 const json requestWithInvalidJsonRpcVersion = {
-  {"jsonrpc", "1.0"}
-};
-
-const json expectedJsonRpcVersionErrorResponse = {
-  {"jsonrpc", "2.0"},
-  {"id", json()},
-  {"error" , { {"code", -1},
-    {"message", "Missing or invalid JSON-RPC version -- must be version 2.0!"}}
-  }
-};
-
-const json initServerRequest = {
-  {"jsonrpc", "2.0"},
-  {"id", json()},
+  {"jsonrpc", "1.0"}, // !!!
+  {"id", 1},
   {"method", "initialize"},
   {"params", {
-    {"protocolVersion", "2024-11-05"},
+    {"protocolVersion", globals::SUPPORTED_MCP_PROTOCOL_VERSION},
     {"clientInfo", {
       {"name", "MCPHostApplication"},
       {"version", "0.0.0"}
@@ -34,26 +23,67 @@ const json initServerRequest = {
     }}
 };
 
-const json expectedInitServerResponse = {
-  {"jsonrpc", "2.0"},
-  {"id" , json()},
-  {"result", {
-    {"capabilities", {
-      { "logging" , json::object() },
-      { "prompts" , json::object() },
-      { "resources", json::object() },
-      { "tools", json::object() } }
-    },
-    {"protocolVersion", "2024-11-05"},
-    {"serverInfo",
-      { {"name", "SysMLv2MCPServer4Testing"},
-      {"version", "0.0.0"} }
+const json expectedJsonRpcVersionErrorResponse = {
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 0},
+  {"error" , { {"code", globals::JSONRPC_ERROR_GENERAL},
+    {"message", "Missing or invalid JSON-RPC version -- must be version 2.0!"}}
+  }
+};
+
+const json requestWithInvalidMcpProtocolVersion = {
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 2},
+  {"method", "initialize"},
+  {"params", {
+    {"protocolVersion", "1972-01-01"}, // !!!
+    {"clientInfo", {
+      {"name", "MCPHostApplication"},
+      {"version", "0.0.0"}
+      }}
     }}
-}};
+};
+
+const json expectedMcpProtocolVersionErrorResponse = {
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 0},
+  {"error" , { {"code", globals::JSONRPC_ERROR_GENERAL},
+    {"message", "Unsupported MCP protocol version: 1972-01-01"}}
+  }
+};
+
+const json initServerRequest = {
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 3},
+  {"method", "initialize"},
+  {"params", {
+    {"protocolVersion", globals::SUPPORTED_MCP_PROTOCOL_VERSION},
+    {"clientInfo", {
+      {"name", "TestApplication"},
+      {"version", "0.0.0"}
+      }}
+    }}
+};
+
+const json expectedInitServerResponse = {
+  {"id" , 3} ,
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION} ,
+  {"result",
+    { { "capabilities", {
+      {"logging", json::object() },
+      {"prompts", { {"ListChanged", false} } },
+      {"resources", { {"ListChanged", false} } },
+      {"tools", { {"ListChanged", false} } } } },
+    {"protocolVersion", globals::SUPPORTED_MCP_PROTOCOL_VERSION},
+    {"serverInfo", {
+      {"name", "SysMLv2MCPServer4Testing"},
+      {"version", "0.0.0"} } }
+    }}
+};
 
 const json callEchoToolRequest = {
-  {"jsonrpc", "2.0"},
-  {"id", json()},
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 4},
   {"method", "tools/call"},
   {"params", {
     {"name", "echo"},
@@ -64,8 +94,8 @@ const json callEchoToolRequest = {
 };
 
 const json expectedEchoToolResponse = {
-  {"jsonrpc", "2.0"},
-  {"id", json()},
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 4},
   {"result", {
     {"content", {{
       {"type", "text"},
@@ -76,8 +106,8 @@ const json expectedEchoToolResponse = {
 };
 
 const json listAvailableToolsRequest = {
-  {"jsonrpc", "2.0"},
-  {"id", json()},
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 5},
   {"method", "tools/list"},
   {"params", {
     {"protocolVersion", "2024-11-05"},
@@ -89,8 +119,8 @@ const json listAvailableToolsRequest = {
 };
 
 const json expectedToolListResponse = {
-  {"jsonrpc", "2.0"},
-  {"id", json()},
+  {"jsonrpc", globals::REQUIRED_JSONRPC_VERSION},
+  {"id", 5},
   {"result", {
     {"tools", {{
       {"name", "echo"},

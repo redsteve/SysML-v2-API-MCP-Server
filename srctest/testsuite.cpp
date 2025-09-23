@@ -11,6 +11,12 @@ TEST_CASE("Verifying SysML v2 API MCP-Server") {
     REQUIRE(response == expectedJsonRpcVersionErrorResponse);
   }
 
+  SECTION("Unsupported MCP protocol version leads to an error response") {
+    MCPServer server { SERVER_NAME, SERVER_VERSION };
+    const json response = server.handleRequest(requestWithInvalidMcpProtocolVersion);
+    REQUIRE(response == expectedMcpProtocolVersionErrorResponse);
+  }
+
   SECTION("Check whether the server is properly initialized") {
     MCPServer server { SERVER_NAME, SERVER_VERSION };
     const json response = server.handleRequest(initServerRequest);

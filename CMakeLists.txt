@@ -17,7 +17,7 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 include(FetchContent)
 
 # Fetch nlohmann::json (JSON library for modern C++)
-FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git GIT_TAG v3.12.0)
 FetchContent_MakeAvailable(json)
 include_directories(${CMAKE_SOURCE_DIR}/build/_deps/json-src/include)
 
@@ -36,7 +36,7 @@ FetchContent_MakeAvailable(argparse)
 include_directories(${CMAKE_SOURCE_DIR}/build/_deps/argparse-src/include)
 
 # Fetch httplib C++ header-only cross platform HTTP/HTTPS library
-FetchContent_Declare(httplib GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git GIT_TAG v0.15.3)
+FetchContent_Declare(httplib GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git GIT_TAG v0.26.0)
 FetchContent_MakeAvailable(httplib)
 
 find_package(Threads REQUIRED)
@@ -58,6 +58,9 @@ target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/
 target_link_libraries(${TEST_NAME} PRIVATE argparse spdlog::spdlog ws2_32 Threads::Threads OpenSSL::SSL OpenSSL::Crypto Catch2::Catch2WithMain)
 
 enable_testing()
+include(CTest)
+include(Catch)
+catch_discover_tests(${TEST_NAME})
 add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
 # === Target: MCPServer Application ===

@@ -1,4 +1,5 @@
 #include "mcpserver.hpp"
+#include "globals.hpp"
 #include "sysmlv2/sysmlv2apiclient.hpp"
 #include "httptoolclient.hpp"
 
@@ -14,7 +15,7 @@ MCPServer::MCPServer(const string_view name, const string_view version,
   const ProgramOptions& programOptions) noexcept :
   name_(name), version_(version), programOptions_(move(programOptions)) {
   setupCapabilities();
-  httpToolClient_ = std::make_unique<SysMLv2APIClient>(*this,
+  httpToolClient_ = std::make_unique<SysMLv2APIClient>(*this, *this,
     programOptions_.sysmlv2ApiUrl_);
 }
 
@@ -57,12 +58,16 @@ json MCPServer::handleRequest(const json& request) noexcept {
 
     const string method = request[JSONPARAM_METHOD];
     const json parameters = request.value("params", json::object());
-    const json id = request.value("id", nullptr);
+    const uint64_t id = request.value("id", 0);
 
     json result;
 
     if (method == "initialize") {
       result = performInitialization(parameters);
+    } else if (method == "notifications/initialized") {
+      spdlog::info("Capability negotiation handshake successful. Client is ready to "
+        "begin normal operations.");
+      return result;
     } else if (method == "tools/list") {
       result = determineListOfAvailableTools();
     } else if (method == "tools/call") {
@@ -71,25 +76,36 @@ json MCPServer::handleRequest(const json& request) noexcept {
       result = determineListOfAvailableResources();
     } else if (method == "resources/read") {
       result = readResource(parameters);
+    } else if (method == "prompts/list") {
+      result = determineListOfAvailablePrompts();
     } else {
-      throw runtime_error("Unknown method: " + method);
+      std::string message("The requested method '");
+      message += method;
+      message += "' does not exist.";
+      return {
+        {PARAM_JSONRPC_VERSION, globals::REQUIRED_JSONRPC_VERSION},
+        {"id", id},
+        {"error", {
+          {"code", globals::JSONRPC_ERROR_METHOD_NOT_FOUND},
+          {"message", message}
+        }}
+      };
     }
     spdlog::trace("<MCPServer::handleRequest> - result: {}", result.dump());
 
     return {
-      {JSONPARAM_JSONRPC_VERSION, "2.0"},
+      {PARAM_JSONRPC_VERSION, globals::REQUIRED_JSONRPC_VERSION},
       {"id", id},
       {"result", result}
     };
 
   } catch (const exception& ex) {
-    json id = request.value("id", nullptr);
     spdlog::error("while handling request: {}", ex.what());
     return {
-      {JSONPARAM_JSONRPC_VERSION, "2.0"},
-      {"id", id},
+      {PARAM_JSONRPC_VERSION, globals::REQUIRED_JSONRPC_VERSION},
+      {"id", 0},
       {"error", {
-        {"code", -1},
+        {"code", globals::JSONRPC_ERROR_GENERAL},
         {"message", ex.what()}
       }}
     };
@@ -97,33 +113,39 @@ json MCPServer::handleRequest(const json& request) noexcept {
 }
 
 void MCPServer::registerTool(const string& toolName,
-                             const string& description,
-                             const json& inputSchema,
-                             function<json(const json&)> handler) {
+  const string& description,
+  const json& inputSchema,
+  function<json(const json&)> handler) {
   tools_[toolName] = {toolName, description, inputSchema, handler};
 }
 
 void MCPServer::registerResource(const string& resourceName,
-                                 const string& uri,
-                                 const string& description,
-                                 const string& mimeType,
-                                 function<json()> handler) {
+  const string& uri,
+  const string& description,
+  const string& mimeType,
+  function<json()> handler) {
   resources_[uri] = {uri, resourceName, description, mimeType, handler};
+}
+
+void MCPServer::registerPrompt(const std::string& promptName,
+  const std::string& title,
+  const std::string& description,
+  const nlohmann::json& arguments) {
+    prompts_[promptName] = {promptName, title, description, arguments};
 }
 
 void MCPServer::setupCapabilities() noexcept {
   capabilities_ = {
-    {"tools", json::object()},
-    {"resources", json::object()},
-    {"prompts", json::object()},
+    {"tools", {{ "ListChanged", false }}},
+    {"resources", {{ "ListChanged", false }}},
+    {"prompts", {{ "ListChanged", false }}},
     {"logging", json::object()}
   };
 }
 
 void MCPServer::registerEchoTool() {
   registerTool("echo",
-    "A simple tool that returns the passed message as its response.",
-    {
+    "A simple tool that returns the passed message as its response.", {
       {"type", "object"},
       {"properties", {
         {"message", {
@@ -148,12 +170,11 @@ json MCPServer::performInitialization(const json& parameters) {
     checkMcpProtocolVersion(parameters);
     registerEchoTool();
     initialized_ = true;
-    spdlog::info("Capability negotiation handshake successful.");
     spdlog::info("MCP Host (client) is: {}.", parameters["clientInfo"].dump());
   }
   
   return {
-    {JSONPARAM_PROTOCOL_VERSION, SUPPORTED_MCP_PROTOCOL_VERSION},
+    {JSONPARAM_PROTOCOL_VERSION, globals::SUPPORTED_MCP_PROTOCOL_VERSION},
     {"capabilities", capabilities_},
     {"serverInfo", {
       {"name", name_},
@@ -255,6 +276,26 @@ json MCPServer::readResource(const json& parameters) {
     }
 }
 
+json MCPServer::determineListOfAvailablePrompts() const {
+  checkIfServerIsInitialized();
+  
+  json promptList = json::array();
+  
+  for (const auto& [name, prompt] : prompts_) {
+    json promptInfo = {
+      {"name", prompt.name_},
+      {"title", prompt.title_},
+      {"description", prompt.description_},
+      {"arguments", prompt.arguments_.dump()}
+    };
+    promptList.push_back(promptInfo);
+  }
+  
+  return {
+    {"prompts", promptList}
+  };
+}
+
 void MCPServer::checkIfServerIsInitialized() const {
   if (! initialized_) {
     throw runtime_error("MCP Server not initialized! Call method 'initialize' first.");
@@ -262,8 +303,8 @@ void MCPServer::checkIfServerIsInitialized() const {
 }
 
 void MCPServer::checkJsonRpcVersion(const json &request) const {
-  if (! request.contains(JSONPARAM_JSONRPC_VERSION) ||
-        request[JSONPARAM_JSONRPC_VERSION] != REQUIRED_JSONRPC_VERSION) {
+  if (! request.contains(PARAM_JSONRPC_VERSION) ||
+        request[PARAM_JSONRPC_VERSION] != globals::REQUIRED_JSONRPC_VERSION) {
     throw runtime_error("Missing or invalid JSON-RPC version -- must be version 2.0!");
   }
 }
@@ -272,7 +313,7 @@ void MCPServer::checkMcpProtocolVersion(const json &parameters) const {
   checkIfParameterExists(JSONPARAM_PROTOCOL_VERSION, parameters);
 
   const string protocolVersion = parameters[JSONPARAM_PROTOCOL_VERSION];
-  if (protocolVersion != SUPPORTED_MCP_PROTOCOL_VERSION) {
+  if (protocolVersion != globals::SUPPORTED_MCP_PROTOCOL_VERSION) {
     throw runtime_error("Unsupported MCP protocol version: " + protocolVersion);
   }
 }
@@ -299,8 +340,6 @@ void MCPServer::checkIfResourceExists(const std::string& uri) const {
   }
 }
 
-const char* const MCPServer::JSONPARAM_JSONRPC_VERSION = "jsonrpc";
-const char* const MCPServer::REQUIRED_JSONRPC_VERSION = "2.0";
+const char* const MCPServer::PARAM_JSONRPC_VERSION = "jsonrpc";
 const char* const MCPServer::JSONPARAM_PROTOCOL_VERSION = "protocolVersion";
-const char* const MCPServer::SUPPORTED_MCP_PROTOCOL_VERSION = "2024-11-05";
 const char* const MCPServer::JSONPARAM_METHOD = "method";

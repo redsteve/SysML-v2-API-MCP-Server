@@ -1,3 +1,4 @@
+#include "globals.hpp"
 #include "commandlineargumentparser.hpp"
 #include "httpmcptransport.hpp"
 #include "mcpserver.hpp"
@@ -5,22 +6,26 @@
 #include "sysmlv2/sysmlv2apiclient.hpp"
 
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
-const char* const APPLICATION_NAME = "SysMLv2MCPServer";
-const char* const APPLICATION_VERSION = "0.0.9 BETA";
+// Forward declarations
+void initializeLogging(const spdlog::filename_t& logFileName);
 
 int main(int argc, const char** argv) {
-  spdlog::set_level(spdlog::level::trace);
-  CommandLineArgumentParser parser{ APPLICATION_NAME, APPLICATION_VERSION };
+  CommandLineArgumentParser parser{ globals::APPLICATION_NAME,
+    globals::APPLICATION_VERSION };
   ProgramOptions programOptions = parser.parse(argc, argv);
+  initializeLogging(programOptions.logFileName_);
 
   // Step 1: Configure the server
-  MCPServer server { APPLICATION_NAME, APPLICATION_VERSION, programOptions };
+  MCPServer server { globals::APPLICATION_NAME, globals::APPLICATION_VERSION,
+    programOptions };
   if (programOptions.mcpTransportKind_ == McpTransportKind::stdinout) {
     server.setMcpTransport(std::make_unique<StdinStdoutMcpTransport>());
     spdlog::info("MCP transport configured to stdin/stdout.");
   } else {
-    server.setMcpTransport(std::make_unique<HttpMcpTransport>(APPLICATION_NAME, APPLICATION_VERSION));
+    server.setMcpTransport(std::make_unique<HttpMcpTransport>(globals::APPLICATION_NAME,
+      globals::APPLICATION_VERSION));
     spdlog::info("MCP transport configured to HTTP.");
   }
 
@@ -28,7 +33,7 @@ int main(int argc, const char** argv) {
   try {
     server.run();
   } catch (const std::runtime_error& ex) {
-    spdlog::error("FATAL ERROR - Server start failed. Reason: {}", ex.what());
+    spdlog::critical("FATAL ERROR - Server start failed. Reason: {}", ex.what());
     return EXIT_FAILURE;
   }
 
@@ -40,4 +45,16 @@ int main(int argc, const char** argv) {
   server.stop();
   spdlog::info("Server successfully stopped. Good bye!");
   return EXIT_SUCCESS;
+}
+
+void initializeLogging([[maybe_unused]]const spdlog::filename_t& logFileName) {
+  try {
+    auto logger = spdlog::basic_logger_mt(globals::APPLICATION_NAME, logFileName);
+    spdlog::set_default_logger(logger);
+    spdlog::default_logger()->set_level(spdlog::level::trace);
+    spdlog::flush_every(std::chrono::seconds(2));
+    spdlog::trace("Initialization of logging successful.");
+  } catch (const spdlog::spdlog_ex &ex) {
+    std::cerr << "Initialization of logging failed: " << ex.what() << std::endl;
+  }
 }

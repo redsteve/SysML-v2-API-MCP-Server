@@ -17,4 +17,5 @@ struct ProgramOptions {
   std::string mcpTransportUrl_;
   std::string sysmlv2ApiUrl_;
   LogLevel logLevel_;
+  std::string logFileName_;
 };

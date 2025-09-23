@@ -18,9 +18,10 @@ void StdinStdoutMcpTransport::start(function<json(const json&)> requestHandler) 
           continue;
           
         json request = json::parse(line);
-        spdlog::info("Request is: {}", request.dump());
+        spdlog::debug("Request is: {}", request.dump());
         json response = requestHandler(request);
-        spdlog::info("Received response from request handler: {}", response.dump());
+        spdlog::debug("Received response from request handler: {}", response.dump());
+        std::cout << response << std::flush;
       } catch (const exception& ex) {
         const json errorResponse = {
           {"jsonrpc", "2.0"},
@@ -30,7 +31,8 @@ void StdinStdoutMcpTransport::start(function<json(const json&)> requestHandler) 
             {"message", std::string(ex.what())}
           }}
         };
-        spdlog::error("Error while parsing received data from stdin: {}", errorResponse.dump());
+        spdlog::error("while parsing received data from stdin: {}", ex.what());
+        std::cout << errorResponse << std::flush;
       }
     }
   });

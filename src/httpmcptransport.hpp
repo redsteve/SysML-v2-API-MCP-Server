@@ -23,14 +23,16 @@ public:
     const std::string& serverName, const std::string serverVersion);
   HttpMcpTransport() = delete;
 
-  void start(std::function<json(const json&)> requestHandler) override;
+  void start(std::function<json(const json &)> requestHandler) override;
   void stop() override;
   bool isRunning() const noexcept override;
 
   ~HttpMcpTransport() override;
 
 private:
+  void configureLogging() noexcept;
   void createEndpoints(std::function<json(const json&)> requestHandler);
+  void launchServerThread();
 
   std::string hostAddress_;
   uint16_t port_;
@@ -39,8 +41,4 @@ private:
   std::thread serverThread_;
   std::unique_ptr<httplib::Server> server_;
   bool running_ { false };
-
-  static const char* const JSON_MIME_TYPE;
-  static const int HTTP_STATUS_OK;
-  static const int HTTP_STATUS_BAD_REQUEST;
 };

@@ -2,6 +2,7 @@
 
 #include "../httptoolclient.hpp"
 #include "../mcptoolregistry.hpp"
+#include "../mcppromptregistry.hpp"
 
 using Identifier = std::string;
 
@@ -14,6 +15,7 @@ using Identifier = std::string;
 class SysMLv2APIClient : public HttpToolClient {
 public:
   SysMLv2APIClient(MCPToolRegistry& mcpToolRegistry,
+    MCPPromptRegistry& mcpPromptRegistry,
     const std::string_view sysmlv2ApiUrl);
 
 #pragma region Project Service Operations
@@ -132,6 +134,7 @@ public:
 
 private:
   void setupSysMLv2APITools(MCPToolRegistry& mcpToolRegistry);
+  void setupSysMLv2APIPrompts(MCPPromptRegistry& mcpPromptRegistry);
   void setDefaultHeaders() noexcept;
 
   const std::string sysmlv2ApiBaseUrl_;

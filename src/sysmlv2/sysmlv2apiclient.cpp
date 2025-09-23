@@ -4,8 +4,10 @@
 using namespace std;
 
 SysMLv2APIClient::SysMLv2APIClient(MCPToolRegistry& mcpToolRegistry,
-  const string_view sysmlv2ApiUrl) : sysmlv2ApiBaseUrl_(sysmlv2ApiUrl) {
+  MCPPromptRegistry& mcpPromptRegistry, const string_view sysmlv2ApiUrl) :
+  sysmlv2ApiBaseUrl_(sysmlv2ApiUrl) {
   setupSysMLv2APITools(mcpToolRegistry);
+  setupSysMLv2APIPrompts(mcpPromptRegistry);
   setDefaultHeaders();
 }
 
@@ -488,6 +490,13 @@ void SysMLv2APIClient::setupSysMLv2APITools(MCPToolRegistry &mcpToolRegistry)
               {"content", {{{"type", "text"}, {"text", "Error: " + std::string(e.what())}}}}};
         }
       });
+}
+
+void SysMLv2APIClient::setupSysMLv2APIPrompts(MCPPromptRegistry& mcpPromptRegistry) {
+  mcpPromptRegistry.registerPrompt("sysml_list_projects",
+  "Discover all available SysML v2 projects.",
+  "To get an overview, it is a good idea to first explore the model repository and discover the "
+  "existing SysML v2 projects.", nullptr);
 }
 
 void SysMLv2APIClient::setDefaultHeaders() noexcept {
